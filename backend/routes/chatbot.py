@@ -34,7 +34,7 @@ class StoreDeps(BaseModel):
 
 
 agent = Agent(
-    "groq:qwen/qwen3-32b",
+    model="groq:openai/gpt-oss-20b",
     deps_type=StoreDeps, ## they way it will output
     system_prompt=(
         "You are a friendly shopping assistant for ClothStore — an online clothing store. "

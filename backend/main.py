@@ -1,16 +1,17 @@
 from fastapi import FastAPI
-from backend.routes import products,orders,cart,chatbot
+from fastapi.staticfiles import StaticFiles
+from backend.routes import products, orders, cart, chatbot
 import os
 import uvicorn
 import logfire
 
-app=FastAPI()
+app = FastAPI()
 
 logfire.configure(send_to_logfire="if-token-present")
 logfire.instrument_fastapi(app)
 logfire.instrument_pydantic()
 
-UPLOAD_FOLDER="uploads"
+UPLOAD_FOLDER = "uploads"
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
@@ -19,11 +20,9 @@ app.include_router(orders.router)
 app.include_router(cart.router)
 app.include_router(chatbot.router)
 
-from fastapi.staticfiles import StaticFiles
-app.mount("/uploads",StaticFiles(directory="uploads"), name="uploads")
-
-app.mount("/uploads",StaticFiles(directory="Frontend"),html=True, name="frontend")
+app.mount("/uploads", StaticFiles(directory=UPLOAD_FOLDER), name="uploads")
+app.mount("/", StaticFiles(directory="Frontend", html=True), name="frontend")
 
 if __name__ == "__main__":
     print("Starting backend server (FastAPI)...")
-    uvicorn.run(app,host='0.0.0.0',port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=8000)
